@@ -1,0 +1,89 @@
+<%- include('_header') %>
+
+<div class="page-head">
+  <h1>Faktura č. <%= invoice.number %></h1>
+  <div class="actions">
+    <a class="btn primary" href="/invoices/<%= invoice.id %>/pdf" target="_blank">Stáhnout PDF</a>
+    <form method="post" action="/invoices/<%= invoice.id %>/delete" onsubmit="return confirm('Opravdu smazat fakturu?');" style="display:inline">
+      <button type="submit" class="btn danger">Smazat</button>
+    </form>
+  </div>
+</div>
+
+<div class="invoice-card">
+  <div class="parties">
+    <div>
+      <h3>Dodavatel</h3>
+      <p>
+        <strong><%= settings.name %></strong><br>
+        <%= settings.address %><br>
+        <% if (settings.ico) { %>IČO: <%= settings.ico %><br><% } %>
+        <% if (settings.dic) { %>DIČ: <%= settings.dic %><br><% } %>
+        <% if (settings.email) { %><%= settings.email %><br><% } %>
+        <% if (settings.phone) { %><%= settings.phone %><% } %>
+      </p>
+    </div>
+    <div>
+      <h3>Odběratel</h3>
+      <p>
+        <strong><%= invoice.customer_name %></strong><br>
+        <%= invoice.customer_address %><br>
+        <% if (invoice.customer_ico) { %>IČO: <%= invoice.customer_ico %><br><% } %>
+        <% if (invoice.customer_dic) { %>DIČ: <%= invoice.customer_dic %><% } %>
+      </p>
+    </div>
+  </div>
+
+  <div class="meta">
+    <dl>
+      <dt>Datum vystavení</dt><dd><%= new Date(invoice.issue_date).toLocaleDateString('cs-CZ') %></dd>
+      <dt>Datum splatnosti</dt><dd><%= new Date(invoice.due_date).toLocaleDateString('cs-CZ') %></dd>
+      <dt>DUZP</dt><dd><%= new Date(invoice.taxable_date).toLocaleDateString('cs-CZ') %></dd>
+    </dl>
+    <dl>
+      <dt>Způsob platby</dt><dd><%= invoice.payment_method %></dd>
+      <dt>Variabilní symbol</dt><dd><%= invoice.variable_symbol %></dd>
+      <% if (settings.bank_account) { %>
+        <dt>Bankovní účet</dt><dd><%= settings.bank_account %></dd>
+      <% } %>
+    </dl>
+  </div>
+
+  <table class="list">
+    <thead>
+      <tr>
+        <th>Popis</th>
+        <th class="num">Množství</th>
+        <th>MJ</th>
+        <th class="num">Cena/MJ</th>
+        <th class="num">Celkem</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% items.forEach(function(it) { %>
+        <tr>
+          <td><%= it.description %></td>
+          <td class="num"><%= Number(it.quantity) %></td>
+          <td><%= it.unit %></td>
+          <td class="num"><%= Number(it.unit_price).toLocaleString('cs-CZ', {minimumFractionDigits:2, maximumFractionDigits:2}) %> Kč</td>
+          <td class="num"><%= Number(it.total).toLocaleString('cs-CZ', {minimumFractionDigits:2, maximumFractionDigits:2}) %> Kč</td>
+        </tr>
+      <% }) %>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4" class="num"><strong>Celkem k úhradě</strong></td>
+        <td class="num"><strong><%= Number(invoice.total).toLocaleString('cs-CZ', {minimumFractionDigits:2, maximumFractionDigits:2}) %> Kč</strong></td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <% if (invoice.note) { %>
+    <p class="note"><%= invoice.note %></p>
+  <% } %>
+  <% if (settings.note) { %>
+    <p class="note muted"><%= settings.note %></p>
+  <% } %>
+</div>
+
+<%- include('_footer') %>

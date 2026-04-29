@@ -1,0 +1,119 @@
+<%- include('_header') %>
+
+<div class="page-head">
+  <h1>Nová faktura</h1>
+</div>
+
+<form method="post" action="<%= action %>" class="card">
+  <h2>Údaje faktury</h2>
+  <div class="grid-2">
+    <label>
+      <span>Číslo faktury</span>
+      <input type="text" name="number" value="<%= invoice.number %>" required>
+    </label>
+    <label>
+      <span>Variabilní symbol</span>
+      <input type="text" name="variable_symbol" value="<%= invoice.variable_symbol %>">
+    </label>
+    <label>
+      <span>Datum vystavení</span>
+      <input type="date" name="issue_date" value="<%= invoice.issue_date %>" required>
+    </label>
+    <label>
+      <span>Datum splatnosti</span>
+      <input type="date" name="due_date" value="<%= invoice.due_date %>" required>
+    </label>
+    <label>
+      <span>DUZP</span>
+      <input type="date" name="taxable_date" value="<%= invoice.taxable_date %>" required>
+    </label>
+    <label>
+      <span>Způsob platby</span>
+      <select name="payment_method">
+        <% ['Bankovní převod','Hotově','Kartou'].forEach(function(opt) { %>
+          <option value="<%= opt %>" <%= invoice.payment_method === opt ? 'selected' : '' %>><%= opt %></option>
+        <% }) %>
+      </select>
+    </label>
+  </div>
+
+  <h2>Odběratel</h2>
+  <div class="grid-2">
+    <label class="span-2">
+      <span>Název / jméno</span>
+      <input type="text" name="customer_name" value="<%= invoice.customer_name %>" required>
+    </label>
+    <label class="span-2">
+      <span>Adresa</span>
+      <textarea name="customer_address" rows="2"><%= invoice.customer_address %></textarea>
+    </label>
+    <label>
+      <span>IČO</span>
+      <input type="text" name="customer_ico" value="<%= invoice.customer_ico %>">
+    </label>
+    <label>
+      <span>DIČ</span>
+      <input type="text" name="customer_dic" value="<%= invoice.customer_dic %>">
+    </label>
+  </div>
+
+  <h2>Položky</h2>
+  <table class="items" id="items">
+    <thead>
+      <tr>
+        <th>Popis</th>
+        <th class="col-qty">Množství</th>
+        <th class="col-unit">MJ</th>
+        <th class="col-price">Cena/MJ</th>
+        <th class="col-total">Celkem</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% items.forEach(function(it) { %>
+        <tr class="item">
+          <td><input type="text" name="item_description" value="<%= it.description || '' %>" placeholder="Popis služby / zboží"></td>
+          <td><input type="text" inputmode="decimal" name="item_quantity" value="<%= it.quantity != null ? it.quantity : 1 %>" class="qty"></td>
+          <td><input type="text" name="item_unit" value="<%= it.unit || 'ks' %>" class="unit"></td>
+          <td><input type="text" inputmode="decimal" name="item_unit_price" value="<%= it.unit_price != null ? it.unit_price : 0 %>" class="price"></td>
+          <td class="line-total num">0,00</td>
+          <td><button type="button" class="remove" aria-label="Odstranit">×</button></td>
+        </tr>
+      <% }) %>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4" class="num"><strong>Celkem</strong></td>
+        <td class="num grand-total"><strong>0,00 Kč</strong></td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <button type="button" id="add-item" class="btn">+ Přidat položku</button>
+
+  <h2>Poznámka</h2>
+  <label class="span-2">
+    <textarea name="note" rows="2" placeholder="Volitelná poznámka na fakturu"><%= invoice.note %></textarea>
+  </label>
+
+  <div class="form-actions">
+    <a href="/" class="btn">Zrušit</a>
+    <button type="submit" class="btn primary"><%= submitLabel %></button>
+  </div>
+</form>
+
+<template id="row-tpl">
+  <tr class="item">
+    <td><input type="text" name="item_description" placeholder="Popis služby / zboží"></td>
+    <td><input type="text" inputmode="decimal" name="item_quantity" value="1" class="qty"></td>
+    <td><input type="text" name="item_unit" value="ks" class="unit"></td>
+    <td><input type="text" inputmode="decimal" name="item_unit_price" value="0" class="price"></td>
+    <td class="line-total num">0,00</td>
+    <td><button type="button" class="remove" aria-label="Odstranit">×</button></td>
+  </tr>
+</template>
+
+<script src="/form.js"></script>
+
+<%- include('_footer') %>

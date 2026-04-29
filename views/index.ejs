@@ -1,0 +1,42 @@
+<%- include('_header') %>
+
+<div class="page-head">
+  <h1>Vystavené faktury</h1>
+  <a class="btn primary" href="/invoices/new">+ Nová faktura</a>
+</div>
+
+<% if (!invoices.length) { %>
+  <div class="empty">
+    <p>Zatím nemáte žádné faktury.</p>
+    <p>Nezapomeňte si nejdřív vyplnit <a href="/settings">údaje dodavatele</a>.</p>
+  </div>
+<% } else { %>
+  <table class="list">
+    <thead>
+      <tr>
+        <th>Číslo</th>
+        <th>Vystaveno</th>
+        <th>Splatnost</th>
+        <th>Odběratel</th>
+        <th class="num">Částka</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% invoices.forEach(function(i) { %>
+        <tr>
+          <td><a href="/invoices/<%= i.id %>"><%= i.number %></a></td>
+          <td><%= new Date(i.issue_date).toLocaleDateString('cs-CZ') %></td>
+          <td><%= new Date(i.due_date).toLocaleDateString('cs-CZ') %></td>
+          <td><%= i.customer_name %></td>
+          <td class="num"><%= Number(i.total).toLocaleString('cs-CZ', {minimumFractionDigits:2, maximumFractionDigits:2}) %> Kč</td>
+          <td class="row-actions">
+            <a href="/invoices/<%= i.id %>/pdf">PDF</a>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+<% } %>
+
+<%- include('_footer') %>

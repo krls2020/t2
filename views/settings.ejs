@@ -1,0 +1,59 @@
+<%- include('_header') %>
+
+<div class="page-head">
+  <h1>Údaje dodavatele</h1>
+</div>
+
+<% if (saved) { %>
+  <div class="flash">Uloženo.</div>
+<% } %>
+
+<form method="post" action="/settings" class="card">
+  <div class="grid-2">
+    <label>
+      <span>Jméno / firma</span>
+      <input type="text" name="name" value="<%= settings.name %>" required>
+    </label>
+    <label>
+      <span>IČO</span>
+      <input type="text" name="ico" value="<%= settings.ico %>">
+    </label>
+    <label class="span-2">
+      <span>Adresa</span>
+      <textarea name="address" rows="2"><%= settings.address %></textarea>
+    </label>
+    <label>
+      <span>DIČ (volitelné)</span>
+      <input type="text" name="dic" value="<%= settings.dic %>">
+    </label>
+    <label>
+      <span>E-mail</span>
+      <input type="email" name="email" value="<%= settings.email %>">
+    </label>
+    <label>
+      <span>Telefon</span>
+      <input type="text" name="phone" value="<%= settings.phone %>">
+    </label>
+    <label>
+      <span>Bankovní účet</span>
+      <input type="text" name="bank_account" value="<%= settings.bank_account %>">
+    </label>
+    <label>
+      <span>IBAN</span>
+      <input type="text" name="iban" value="<%= settings.iban %>">
+    </label>
+    <label>
+      <span>SWIFT / BIC</span>
+      <input type="text" name="swift" value="<%= settings.swift %>">
+    </label>
+    <label class="span-2">
+      <span>Poznámka pod fakturou (např. „Nejsem plátcem DPH.")</span>
+      <textarea name="note" rows="2"><%= settings.note %></textarea>
+    </label>
+  </div>
+  <div class="form-actions">
+    <button type="submit" class="btn primary">Uložit</button>
+  </div>
+</form>
+
+<%- include('_footer') %>

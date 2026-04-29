@@ -1,0 +1,5 @@
+node_modules/
+fonts/
+.DS_Store
+*.log
+.env
