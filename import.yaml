@@ -1,0 +1,39 @@
+# Zerops project import — Fakturační služba pro OSVČ neplátce DPH.
+#
+# Použití:
+#   1. Otevři https://app.zerops.io a založ nový projekt z YAML.
+#   2. Nahraj tento soubor (nebo zkopíruj jeho obsah).
+#   3. Po importu Zerops naklonuje aplikaci ze zdrojového repozitáře a
+#      automaticky ji sestaví podle setup `prod` v `zerops.yaml`.
+#
+# Předpoklady: nic — služba je bez přihlášení a bez externích integrací.
+project:
+  name: fakturace
+  description: Jednoduchá fakturační služba pro OSVČ neplátce DPH (Express + EJS + pdfkit + PostgreSQL).
+  tags:
+    - nodejs
+    - postgresql
+    - invoicing
+
+services:
+  # Webová aplikace — zdroj se klonuje z GitHubu, build a start řídí
+  # `zerops.yaml` (setup `prod`). Subdoména poskytuje veřejné HTTPS URL.
+  - hostname: app
+    type: nodejs@22
+    enableSubdomainAccess: true
+    buildFromGit: https://github.com/krls2020/t2
+    zeropsSetup: prod
+    minContainers: 1
+    maxContainers: 1
+    verticalAutoscaling:
+      minRam: 0.25
+      minFreeRamGB: 0.125
+
+  # PostgreSQL — sdílená databáze pro nastavení dodavatele a faktury.
+  # Migrace tabulek běží idempotentně při startu aplikace.
+  - hostname: db
+    type: postgresql@18
+    mode: NON_HA
+    priority: 10
+    verticalAutoscaling:
+      minRam: 0.25

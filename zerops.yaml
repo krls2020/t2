@@ -35,7 +35,7 @@ zerops:
     build:
       base: nodejs@22
       buildCommands:
-        - npm ci --omit=dev
+        - npm install --omit=dev
         - mkdir -p fonts
         - curl -fsSL -o /tmp/dejavu.tar.bz2 https://downloads.sourceforge.net/project/dejavu/dejavu/2.37/dejavu-fonts-ttf-2.37.tar.bz2
         - tar -xjf /tmp/dejavu.tar.bz2 -C /tmp
